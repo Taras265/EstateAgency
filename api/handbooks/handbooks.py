@@ -58,6 +58,9 @@ class Handbooks(Api):
     def get(self, handbook_id):
         return requests.get(f'{self.url}/handbook/{handbook_id}').json()
 
+    def get_checked(self, handbook_id, handbook_type):
+        return requests.get(f'{self.url}/{handbook_type}/{handbook_id}').json()
+
     def get_all(self, handbook_type):
         return requests.get(f'{self.url}/{handbook_type}').json()
 
