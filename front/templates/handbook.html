@@ -1,0 +1,1060 @@
+{% extends 'base.html' %}
+
+{% block title %}Справочник{% endblock %}
+
+{% block content %}
+
+<section class="section context-dark" data-preset='{"title":"Breadcrumbs","category":"main","reload":true,"id":"breadcrumbs"}'>
+        <div class="parallax-container" data-parallax-img="/static/images/bg-header-1920x362.jpg">
+          <div class="parallax-content">
+            <div class="container section-top-34 section-md-top-98 section-bottom-34">
+              <div>
+                <h1 class="font-weight-bold">Справочник</h1>
+              </div>
+              <ul class="list-inline list-inline-dashed p text-light breadcrumb-modern offset-top-10 offset-md-top-66">
+                <li class="list-inline-item"><a href="/">Главная</a></li>
+                <li class="list-inline-item">Справочник</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+<section class="section section-98 section-md-110 section-bottom-66 bg-default novi-background" data-preset='{"title":"About us 1","category":"about","reload":true,"id":"about-us-1"}'>
+    <div class="container">
+      <h2 class="font-weight-bold">Справочник</h2>
+      <hr class="divider bg-saffron">
+      <div class="offset-md-top-66">
+        <!-- Responsive-tabs-->
+        <div class="responsive-tabs responsive-tabs-classic" data-type="horizontal">
+          <ul class="resp-tabs-list tabs-1 tabs-group-default" data-group="tabs-group-default">
+            <li>Область</li>
+            <li>Район</li>
+            <li>Город</li>
+            <li>Район города</li>
+            <li>Улица</li>
+            <li>Клиент/Владелец</li>
+            <li>Филиал</li>
+            <li>Причина снятия</li>
+            <li>Состояние</li>
+            <li>Материал</li>
+            <li>Агенство</li>
+            <li>Название новостроя</li>
+            <li>Лесница</li>
+            <li>Отопление</li>
+            <li>Планировка</li>
+            <li>Тип дома</li>
+          </ul>
+          <div class="resp-tabs-container tabs-group-default" data-group="tabs-group-default">
+              <div>
+                {% if districts %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Область</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for district in districts %}
+                    <tr>
+                        <td></td>
+                        <td>{{district.district}} область</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/districts/{{district.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#district{{district.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="district{{district.id}}" tabindex="-1"
+                                 aria-labelledby="modalDistrict{{district.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalDistrict{{district.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить эту область?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/districts/{{district.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined1">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                {% if region.regions %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Район</th>
+                        <th scope="col">Область</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for region_obj in region.regions %}
+                    <tr>
+                        <td></td>
+                        <td>{{region_obj.region}} район</td>
+                        <td>{{region_obj.district.district}} область</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/regions/{{region_obj.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#region{{region_obj.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="region{{region_obj.id}}"
+                                 tabindex="-1" aria-labelledby="modalRegion{{region_obj.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalRegion{{region_obj.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот район?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/regions/{{region_obj.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{region.prev}}/#undefined2">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{region.page}}/#undefined2">{{region.page}}</a></li>
+                    <li><a href="/handbook/{{region.next}}/#undefined2">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined2">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                {% if city.cities %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Город</th>
+                        <th scope="col">Район</th>
+                        <th scope="col">Тип города</th>
+                        <th scope="col">Тип центра</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for city_obj in city.cities %}
+                    <tr>
+                        <td></td>
+                        <td>Город {{city_obj.city}}</td>
+                        <td>{{city_obj.region.region}} район</td>
+                        <td>{{city_obj.city_type}}</td>
+                        <td>{%if city_obj.center_type%}{{city_obj.center_type}}{%endif%}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/cities/{{city_obj.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#city{{city_obj.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="city{{city.id}}"
+                                 tabindex="-1" aria-labelledby="modalCity{{city_obj.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalCity{{city_obj.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот город?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/cities/{{city_obj.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{city.prev}}/#undefined3">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{city.page}}/#undefined3">{{city.page}}</a></li>
+                    <li><a href="/handbook/{{city.next}}/#undefined3">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined3">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                {% if city_region.city_regions %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Район города</th>
+                        <th scope="col">Город</th>
+                        <th scope="col">Район</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for region in city_region.city_regions %}
+                    <tr>
+                        <td></td>
+                        <td>{{region.city_region}}</td>
+                        <td>Город {{region.city.city}}</td>
+                        <td>{%if region.region%}{{region.region.city_region}}{%endif%}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/city_regions/{{region.id}}" class="btn btn-primary element-fullwidth btn-sm"
+                               type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#city_region{{region.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="city_region{{region.id}}"
+                                 tabindex="-1" aria-labelledby="modalCity_region{{region.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalCity_region{{region.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот район города?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/city_regions/{{region.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{city_region.prev}}/#undefined4">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{city_region.page}}/#undefined4">{{city_region.page}}</a></li>
+                    <li><a href="/handbook/{{city_region.next}}/#undefined4">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined4">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                {% if street.streets %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Улица</th>
+                        <th scope="col">Район города</th>
+                        <th scope="col">Город</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for street_obj in street.streets %}
+                    <tr>
+                        <td></td>
+                        <td>{{street_obj.street}}</td>
+                        <td>Город {{street_obj.city_region.city_region}}</td>
+                        <td>{{street_obj.city.city}} район</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/streets/{{street_obj.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#street{{street_obj.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="street{{street.id}}" tabindex="-1"
+                                 aria-labelledby="modalStreet{{street_obj.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalStreet{{street.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить эту улицу?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/streets/{{street_obj.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{street.prev}}/#undefined5">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{street.page}}/#undefined5">{{street.page}}</a></li>
+                    <li><a href="/handbook/{{street.next}}/#undefined5">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined5">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                {% if client.clients %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Клиент/Владелец</th>
+                        <th scope="col">Почта</th>
+                        <th scope="col">Номер телефона</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for cl in client.clients %}
+                    <tr>
+                        <td></td>
+                        <td>{{cl.first_name}} {{cl.last_name}}</td>
+                        <td>{{cl.email}}</td>
+                        <td>{{cl.phone}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/clients/{{cl.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#client{{cl.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="client{{cl.id}}" tabindex="-1"
+                                 aria-labelledby="modalClient{{cl.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalClient{{cl.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этого клиента/владельца?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/clients/{{cl.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{client.prev}}/#undefined6">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{client.page}}/#undefined6">{{client.page}}</a></li>
+                    <li><a href="/handbook/{{client.next}}/#undefined6">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined7">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                {% if separation.separations %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Филиал</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sep in separation.separations %}
+                    <tr>
+                        <td></td>
+                        <td>{{sep.separation}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/separations/{{sep.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#separation{{sep.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="separation{{sep.id}}" tabindex="-1"
+                                 aria-labelledby="modalSeparation{{sep.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalSeparation{{sep.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот филиал?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/separations/{{sep.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{separation.prev}}/#undefined7">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{separation.page}}/#undefined7">{{separation.page}}</a></li>
+                    <li><a href="/handbook/{{separation.next}}/#undefined7">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined8">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Причина снятия</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for reason in withdrawal_reason.withdrawal_reasons %}
+                    <tr>
+                        <td></td>
+                        <td>{{reason.handbook}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/handbooks/{{reason.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#withdrawal_reason{{reason.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="withdrawal_reason{{reason.id}}" tabindex="-1"
+                                 aria-labelledby="modalWithdrawalReason{{reason.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalWithdrawalReason{{reason.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот справочник?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/handbooks/{{reason.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if withdrawal_reason.withdrawal_reasons %}
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{withdrawal_reason.prev}}/#undefined8">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{withdrawal_reason.page}}/#undefined8">{{withdrawal_reason.page}}</a></li>
+                    <li><a href="/handbook/{{withdrawal_reason.next}}/#undefined8">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined9">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Состояние</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for cond in condition.conditions %}
+                    <tr>
+                        <td></td>
+                        <td>{{cond.handbook}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/handbooks/{{cond.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#condition{{cond.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="condition{{cond.id}}" tabindex="-1"
+                                 aria-labelledby="modalCondition{{cond.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalCondition{{cond.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот справочник?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/handbooks/{{cond.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if condition.conditions %}
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{condition.prev}}/#undefined9">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{condition.page}}/#undefined9">{{condition.page}}</a></li>
+                    <li><a href="/handbook/{{condition.next}}/#undefined9">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined9">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Материал</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for mater in material.materials %}
+                    <tr>
+                        <td></td>
+                        <td>{{mater.handbook}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/handbooks/{{mater.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#material{{mater.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="material{{mater.id}}" tabindex="-1"
+                                 aria-labelledby="modalMaterial{{mater.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalMaterial{{mater.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот справочник?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/handbooks/{{mater.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if material.materials %}
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{material.prev}}/#undefined10">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{material.page}}/#undefined10">{{material.page}}</a></li>
+                    <li><a href="/handbook/{{material.next}}/#undefined10">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined9">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Агенство</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ag in agency.agencies %}
+                    <tr>
+                        <td></td>
+                        <td>{{ag.handbook}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/handbooks/{{ag.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#agency{{ag.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="agency{{ag.id}}" tabindex="-1"
+                                 aria-labelledby="modalAgency{{ag.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalAgency{{ag.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот справочник?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/handbooks/{{ag.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if agency.agencies %}
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{agency.prev}}/#undefined11">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{agency.page}}/#undefined11">{{material.page}}</a></li>
+                    <li><a href="/handbook/{{agency.next}}/#undefined11">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined9">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Название новостроя</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for new_building in new_building_name.new_building_names %}
+                    <tr>
+                        <td></td>
+                        <td>{{new_building.new_building}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/new_buildings/{{new_building.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#new_building{{new_building.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="new_building{{new_building.id}}" tabindex="-1"
+                                 aria-labelledby="modalNewBuilding{{new_building.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalNewBuilding{{new_building.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот новострой?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/new_buildings/{{new_building.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if new_building_name.new_building_names %}
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{new_building_name.prev}}/#undefined12">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{new_building_name.page}}/#undefined12">{{new_building_name.page}}</a></li>
+                    <li><a href="/handbook/{{new_building_name.next}}/#undefined12">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined6">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Лесница</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for stair in stairs.stairs %}
+                    <tr>
+                        <td></td>
+                        <td>{{stair.handbook}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/handbooks/{{stair.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#stair{{stair.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="stair{{stair.id}}" tabindex="-1"
+                                 aria-labelledby="modalStair{{stair.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalStair{{stair.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот справочник?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/handbooks/{{stair.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if stairs.stairs %}
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{stairs.prev}}/#undefined13">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{stairs.page}}/#undefined13">{{stairs.page}}</a></li>
+                    <li><a href="/handbook/{{stairs.next}}/#undefined13">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined9">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Отопление</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for heat in heating.heating %}
+                    <tr>
+                        <td></td>
+                        <td>{{heat.handbook}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/handbooks/{{heat.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#heating{{heat.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="heating{{heat.id}}" tabindex="-1"
+                                 aria-labelledby="modalHeating{{heat.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalHeating{{heat.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот справочник?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/handbooks/{{heat.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if heating.heating %}
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{heating.prev}}/#undefined14">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{heating.page}}/#undefined14">{{heating.page}}</a></li>
+                    <li><a href="/handbook/{{heating.next}}/#undefined14">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined9">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Планировка</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for layout in layouts.layouts %}
+                    <tr>
+                        <td></td>
+                        <td>{{layout.handbook}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/handbooks/{{layout.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#layout{{layout.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="layout{{layout.id}}" tabindex="-1"
+                                 aria-labelledby="modalLayout{{layout.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLayout{{layout.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить этот справочник?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/handbooks/{{layout.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if layouts.layouts %}
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{layouts.prev}}/#undefined15">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{layouts.page}}/#undefined15">{{layouts.page}}</a></li>
+                    <li><a href="/handbook/{{layouts.next}}/#undefined15">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined9">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+              <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Тип дома</th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for house_type in house_types.house_types %}
+                    <tr>
+                        <td></td>
+                        <td>{{house_type.handbook}}</td>
+                        <td>
+                            {% if rights.change_handbook %}
+                            <a href="/handbook/handbooks/{{house_type.id}}" class="btn btn-primary element-fullwidth btn-sm" type="button" style="max-width: 120px">изменить</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rights.delete_handbook %}
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#house_type{{house_type.id}}">
+                              удалить
+                            </button>
+                            <div class="modal fade modal-dialog" id="house_type{{house_type.id}}" tabindex="-1"
+                                 aria-labelledby="modalHouseType{{house_type.id}}" aria-hidden="true">
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="modalHouseType{{house_type.id}}">Удаление</h5>
+                                  </div>
+                                  <div class="modal-body">
+                                    Вы уверенны, что вы хотите удалить эту область?
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                    <a href="/handbook/delete/handbooks/{{house_type.id}}" type="button" class="btn btn-primary">Да</a>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% if house_types.house_types %}
+                <nav>
+                  <ul class="pagination-classic">
+                    <li><a href="/handbook/{{house_types.prev}}/#undefined16">Prev</a></li>
+                    <li class="active"><a href="/handbook/{{house_types.page}}/#undefined16">{{house_types.page}}</a></li>
+                    <li><a href="/handbook/{{house_types.next}}/#undefined16">Next</a></li>
+                  </ul>
+                </nav>
+                {% endif %}
+                {% if rights.add_handbook %}
+                <div class="offset-top-50"><a class="btn btn-primary" href="/handbook/add/#undefined9">добавить</a></div>
+                {% endif %}
+                <br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+{% endblock %}
