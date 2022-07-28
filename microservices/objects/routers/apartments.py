@@ -1,3 +1,4 @@
+from api.all_api import *
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -40,23 +41,19 @@ async def create_apartment(apartment: CreateApartment, db: Session = Depends(get
 
     if apartment.room_types not in ["Смежные", "Раздельные", "Кухня-студия", "Комната"]:
         raise HTTPException(status_code=404, detail="404 Error Not Found Room Type")
-    stair = db.query(Handbooks).filter(
-        Handbooks.id == apartment.stair).filter(Handbooks.handbook_type == "stair").first()
+    stair = handbook_api.get_checked(apartment.stair, "stair")
     if not stair:
         raise HTTPException(status_code=404, detail="404 Error Not Found Stair")
-    heating = db.query(Handbooks).filter(
-        Handbooks.id == apartment.heating).filter(Handbooks.handbook_type == "heating").first()
+    heating = handbook_api.get_checked(apartment.heating, "heating")
     if not heating:
         raise HTTPException(status_code=404, detail="404 Error Not Found Heating")
-    layout = db.query(Handbooks).filter(
-        Handbooks.id == apartment.layout).filter(Handbooks.handbook_type == "layout").first()
+    layout = handbook_api.get_checked(apartment.layout, "layout")
     if not layout:
         raise HTTPException(status_code=404, detail="404 Error Not Found Layout")
-    house_type = db.query(Handbooks).filter(
-        Handbooks.id == apartment.house_type).filter(Handbooks.handbook_type == "house_type").first()
+    house_type = handbook_api.get_checked(apartment.house_type, "house_type")
     if not house_type:
         raise HTTPException(status_code=404, detail="404 Error Not Found House Type")
-    obj = db.query(Objects).filter(Objects.id == apartment.object).first()
+    obj = object_api.get(apartment.object)
     if not obj:
         raise HTTPException(status_code=404, detail="404 Error Not Found Object")
 
@@ -105,23 +102,19 @@ async def update_apartment(apartment_id: int, apartment: CreateApartment, db: Se
 
     if apartment.room_types not in ["Смежные", "Раздельные", "Кухня-студия", "Комната"]:
         raise HTTPException(status_code=404, detail="404 Error Not Found Room Type")
-    stair = db.query(Handbooks).filter(
-        Handbooks.id == apartment.stair).filter(Handbooks.handbook_type == "stair").first()
+    stair = handbook_api.get_checked(apartment.stair, "stair")
     if not stair:
         raise HTTPException(status_code=404, detail="404 Error Not Found Stair")
-    heating = db.query(Handbooks).filter(
-        Handbooks.id == apartment.heating).filter(Handbooks.handbook_type == "heating").first()
+    heating = handbook_api.get_checked(apartment.heating, "heating")
     if not heating:
         raise HTTPException(status_code=404, detail="404 Error Not Found Heating")
-    layout = db.query(Handbooks).filter(
-        Handbooks.id == apartment.layout).filter(Handbooks.handbook_type == "layout").first()
+    layout = handbook_api.get_checked(apartment.layout, "layout")
     if not layout:
         raise HTTPException(status_code=404, detail="404 Error Not Found Layout")
-    house_type = db.query(Handbooks).filter(
-        Handbooks.id == apartment.house_type).filter(Handbooks.handbook_type == "house_type").first()
+    house_type = handbook_api.get_checked(apartment.house_type, "house_type")
     if not house_type:
         raise HTTPException(status_code=404, detail="404 Error Not Found House Type")
-    obj = db.query(Objects).filter(Objects.id == apartment.object).first()
+    obj = object_api.get(apartment.object)
     if not obj:
         raise HTTPException(status_code=404, detail="404 Error Not Found Object")
 

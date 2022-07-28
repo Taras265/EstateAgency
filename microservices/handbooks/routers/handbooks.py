@@ -26,6 +26,15 @@ async def get_handbook(handbook_id: int, db: Session = Depends(get_db)):
     return handbook
 
 
+@router.get("/{handbook_type}/{handbook_id}")
+async def get_checked_handbook(handbook_type: int, handbook_id: int, db: Session = Depends(get_db)):
+    handbook = db.query(Handbooks).filter(Handbooks.handbook_type == handbook_type)\
+        .filter(Handbooks.id == handbook_id).first()
+    if not handbook:
+        raise HTTPException(status_code=404, detail="404 Error Not Found")
+    return handbook
+
+
 @router.get("/{handbook_type}/{start}/{limit}")
 async def all_handbooks_on_page(handbook_type: str, start: int = 0, limit: int = 20, db: Session = Depends(get_db)):
     handbooks = db.query(Handbooks).filter(Handbooks.handbook_type == handbook_type).offset(start).limit(limit).all()

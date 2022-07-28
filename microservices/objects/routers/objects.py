@@ -1,8 +1,7 @@
-import requests
+from api.all_api import *
 from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
-from api.handbooks.handbooks import Locations
 from microservices.database import get_db
 from ..models import *
 from microservices.models import *
@@ -12,8 +11,6 @@ router = APIRouter(
     tags=["objects"],
     responses={404: {"description": "Not found"}}
 )
-
-locations_api = Locations()
 
 
 @router.get("/")
@@ -42,35 +39,31 @@ async def get_objects_by_type(object_type_id: int, db: Session = Depends(get_db)
 @router.post("/")
 async def create_object(obj: CreateObject, db: Session = Depends(get_db)):
     object_model = Objects()
-
-    district = db.query(Districts).filter(Districts.id == obj.district).first()
+    district = district_api.get(obj.district)
     if not district:
         raise HTTPException(status_code=404, detail="404 Error Not Found District")
-    region = db.query(Regions).filter(Regions.id == obj.region).first()
+    region = region_api.get(obj.region)
     if not region:
         raise HTTPException(status_code=404, detail="404 Error Not Found Region")
-    city = db.query(Cities).filter(Cities.id == obj.city).first()
+    city = city_api.get()
     if not city:
         raise HTTPException(status_code=404, detail="404 Error Not Found City")
-    city_region = db.query(CityRegions).filter(CityRegions.id == obj.city_region).first()
+    city_region = city_region_api.get(obj.city_region)
     if not city_region:
         raise HTTPException(status_code=404, detail="404 Error Not Found City Region")
-    street = db.query(Streets).filter(Streets.id == obj.street).first()
+    street = street_api.get(obj.street)
     if not street:
         raise HTTPException(status_code=404, detail="404 Error Not Found Street")
     if obj.withdrawal_reason == "None":
         obj.withdrawal_reason = None
     elif obj.withdrawal_reason.isdigit():
-        withdrawal_reason = db.query(Handbooks).filter(
-            Handbooks.id == obj.withdrawal_reason).filter(Handbooks.handbook_type == "withdrawal_reason").first()
+        withdrawal_reason = handbook_api.get_checked(obj.withdrawal_reason, "withdrawal_reason")
         if not withdrawal_reason:
             raise HTTPException(status_code=404, detail="404 Error Not Found Withdrawal Reason")
-    condition = db.query(Handbooks).filter(
-        Handbooks.id == obj.condition).filter(Handbooks.handbook_type == "condition").first()
+    condition = handbook_api.get_checked(obj.condition, "condition")
     if not condition:
         raise HTTPException(status_code=404, detail="404 Error Not Found Condition")
-    material = db.query(Handbooks).filter(
-        Handbooks.id == obj.material).filter(Handbooks.handbook_type == "material").first()
+    material = handbook_api.get_checked(obj.material, "material")
     if not material:
         raise HTTPException(status_code=404, detail="404 Error Not Found Material")
     if obj.status not in ["В продаже", "Задаток", "Снята", "Продана", "Снята совсем"]:
@@ -78,8 +71,8 @@ async def create_object(obj: CreateObject, db: Session = Depends(get_db)):
     object_type = db.query(ObjectTypes).filter(ObjectTypes.id == obj.object_type).first()
     if not object_type:
         raise HTTPException(status_code=404, detail="404 Error Not Found Object Type")
-    realtor = db.query(Users).filter(Users.id == obj.realtor).first()
-    site_realtor1 = db.query(Users).filter(Users.id == obj.site_realtor1).first()
+    realtor = auth_api.get(obj.realtor)
+    site_realtor1 = auth_api.get(obj.site_realtor1)
     if not realtor:
         raise HTTPException(status_code=404, detail="404 Error Not Found Main Realtor")
     if not site_realtor1:
@@ -87,40 +80,37 @@ async def create_object(obj: CreateObject, db: Session = Depends(get_db)):
     if obj.site_realtor2 == "None":
         obj.site_realtor2 = None
     elif obj.site_realtor2.isdigit():
-        site_realtor2 = db.query(Users).filter(Users.id == obj.site_realtor2).first()
+        site_realtor2 = auth_api.get(obj.site_realtor2)
         if not site_realtor2:
             raise HTTPException(status_code=404, detail="404 Error Not Found Second Site Realtor")
     if obj.realtor_5_5 == "None":
         obj.realtor_5_5 = None
     elif obj.realtor_5_5.isdigit():
-        realtor_5_5 = db.query(Users).filter(Users.id == obj.realtor_5_5).first()
+        realtor_5_5 = auth_api.get(obj.realtor_5_5)
         if not realtor_5_5:
             raise HTTPException(status_code=404, detail="404 Error Not Found Realtor 5 To 5")
-    author = db.query(Users).filter(Users.id == obj.author).first()
+    author = auth_api.get(obj.author)
     if not author:
         raise HTTPException(status_code=404, detail="404 Error Not Found Author")
-    owner = db.query(Clients).filter(Clients.id == obj.owner).first()
+    owner = client_api.get(obj.owner)
     if not owner:
         raise HTTPException(status_code=404, detail="404 Error Not Found Owner")
     if obj.client == "None":
         obj.client = None
     elif obj.client.isdigit():
-        client = db.query(Clients).filter(Clients.id == obj.client).first()
+        client = client_api.get(obj.client)
         if not client:
             raise HTTPException(status_code=404, detail="404 Error Not Found Client")
-    separation = db.query(Separations).filter(Separations.id == obj.separation).first()
+    separation = separation_api.get(obj.separation)
     if not separation:
         raise HTTPException(status_code=404, detail="404 Error Not Found Author")
-    agency = db.query(Handbooks).filter(
-        Handbooks.id == obj.agency).filter(Handbooks.handbook_type == "agency").first()
+    agency = handbook_api.get_checked(obj.agency, "agency")
     if not agency:
         raise HTTPException(status_code=404, detail="404 Error Not Found Agency")
-    agency_sales = db.query(Handbooks).filter(
-        Handbooks.id == obj.agency_sales).filter(Handbooks.handbook_type == "agency").first()
+    agency_sales = handbook_api.get_checked(obj.agency, "agency")
     if not agency_sales:
         raise HTTPException(status_code=404, detail="404 Error Not Found Agency Sales")
-    new_building_name = db.query(NewBuildings).filter(
-        NewBuildings.id == obj.new_building_name).first()
+    new_building_name = new_building_api.get(obj.new_building_name)
     if not new_building_name:
         raise HTTPException(status_code=404, detail="404 Error Not Found New Building Name")
     if obj.new_building_type == "None":
@@ -206,34 +196,31 @@ async def update_object(object_id: int, obj: CreateObject, db: Session = Depends
     if not object_model:
         raise HTTPException(status_code=404, detail="404 Error Not Found")
 
-    district = db.query(Districts).filter(Districts.id == obj.district).first()
+    district = district_api.get(obj.district)
     if not district:
         raise HTTPException(status_code=404, detail="404 Error Not Found District")
-    region = db.query(Regions).filter(Regions.id == obj.region).first()
+    region = region_api.get(obj.region)
     if not region:
         raise HTTPException(status_code=404, detail="404 Error Not Found Region")
-    city = db.query(Cities).filter(Cities.id == obj.city).first()
+    city = city_api.get()
     if not city:
         raise HTTPException(status_code=404, detail="404 Error Not Found City")
-    city_region = db.query(CityRegions).filter(CityRegions.id == obj.city_region).first()
+    city_region = city_region_api.get(obj.city_region)
     if not city_region:
         raise HTTPException(status_code=404, detail="404 Error Not Found City Region")
-    street = db.query(Streets).filter(Streets.id == obj.street).first()
+    street = street_api.get(obj.street)
     if not street:
         raise HTTPException(status_code=404, detail="404 Error Not Found Street")
     if obj.withdrawal_reason == "None":
         obj.withdrawal_reason = None
     elif obj.withdrawal_reason.isdigit():
-        withdrawal_reason = db.query(Handbooks).filter(
-            Handbooks.id == obj.withdrawal_reason).filter(Handbooks.handbook_type == "withdrawal_reason").first()
+        withdrawal_reason = handbook_api.get_checked(obj.withdrawal_reason, "withdrawal_reason")
         if not withdrawal_reason:
             raise HTTPException(status_code=404, detail="404 Error Not Found Withdrawal Reason")
-    condition = db.query(Handbooks).filter(
-        Handbooks.id == obj.condition).filter(Handbooks.handbook_type == "condition").first()
+    condition = handbook_api.get_checked(obj.condition, "condition")
     if not condition:
         raise HTTPException(status_code=404, detail="404 Error Not Found Condition")
-    material = db.query(Handbooks).filter(
-        Handbooks.id == obj.material).filter(Handbooks.handbook_type == "material").first()
+    material = handbook_api.get_checked(obj.material, "material")
     if not material:
         raise HTTPException(status_code=404, detail="404 Error Not Found Material")
     if obj.status not in ["В продаже", "Задаток", "Снята", "Продана", "Снята совсем"]:
@@ -241,8 +228,8 @@ async def update_object(object_id: int, obj: CreateObject, db: Session = Depends
     object_type = db.query(ObjectTypes).filter(ObjectTypes.id == obj.object_type).first()
     if not object_type:
         raise HTTPException(status_code=404, detail="404 Error Not Found Object Type")
-    realtor = db.query(Users).filter(Users.id == obj.realtor).first()
-    site_realtor1 = db.query(Users).filter(Users.id == obj.site_realtor1).first()
+    realtor = auth_api.get(obj.realtor)
+    site_realtor1 = auth_api.get(obj.site_realtor1)
     if not realtor:
         raise HTTPException(status_code=404, detail="404 Error Not Found Main Realtor")
     if not site_realtor1:
@@ -250,40 +237,37 @@ async def update_object(object_id: int, obj: CreateObject, db: Session = Depends
     if obj.site_realtor2 == "None":
         obj.site_realtor2 = None
     elif obj.site_realtor2.isdigit():
-        site_realtor2 = db.query(Users).filter(Users.id == obj.site_realtor2).first()
+        site_realtor2 = auth_api.get(obj.site_realtor2)
         if not site_realtor2:
             raise HTTPException(status_code=404, detail="404 Error Not Found Second Site Realtor")
     if obj.realtor_5_5 == "None":
         obj.realtor_5_5 = None
     elif obj.realtor_5_5.isdigit():
-        realtor_5_5 = db.query(Users).filter(Users.id == obj.realtor_5_5).first()
+        realtor_5_5 = auth_api.get(obj.realtor_5_5)
         if not realtor_5_5:
             raise HTTPException(status_code=404, detail="404 Error Not Found Realtor 5 To 5")
-    author = db.query(Users).filter(Users.id == obj.author).first()
+    author = auth_api.get(obj.author)
     if not author:
         raise HTTPException(status_code=404, detail="404 Error Not Found Author")
-    owner = db.query(Clients).filter(Clients.id == obj.owner).first()
+    owner = client_api.get(obj.owner)
     if not owner:
         raise HTTPException(status_code=404, detail="404 Error Not Found Owner")
     if obj.client == "None":
         obj.client = None
     elif obj.client.isdigit():
-        client = db.query(Clients).filter(Clients.id == obj.client).first()
+        client = client_api.get(obj.client)
         if not client:
             raise HTTPException(status_code=404, detail="404 Error Not Found Client")
-    separation = db.query(Separations).filter(Separations.id == obj.separation).first()
+    separation = separation_api.get(obj.separation)
     if not separation:
         raise HTTPException(status_code=404, detail="404 Error Not Found Author")
-    agency = db.query(Handbooks).filter(
-        Handbooks.id == obj.agency).filter(Handbooks.handbook_type == "agency").first()
+    agency = handbook_api.get_checked(obj.agency, "agency")
     if not agency:
         raise HTTPException(status_code=404, detail="404 Error Not Found Agency")
-    agency_sales = db.query(Handbooks).filter(
-        Handbooks.id == obj.agency_sales).filter(Handbooks.handbook_type == "agency").first()
+    agency_sales = handbook_api.get_checked(obj.agency, "agency")
     if not agency_sales:
         raise HTTPException(status_code=404, detail="404 Error Not Found Agency Sales")
-    new_building_name = db.query(NewBuildings).filter(
-        NewBuildings.id == obj.new_building_name).first()
+    new_building_name = new_building_api.get(obj.new_building_name)
     if not new_building_name:
         raise HTTPException(status_code=404, detail="404 Error Not Found New Building Name")
     if obj.new_building_type == "None":
@@ -375,4 +359,4 @@ async def delete_object(object_id: int, db: Session = Depends(get_db)):
 
         return "Success"
     except IntegrityError:
-        return HTTPException(status_code=400, detail="Bad Request Remove Referencing objects first")
+        return HTTPException(status_code=400, detail="Bad Request Remove Referencing Objects First")

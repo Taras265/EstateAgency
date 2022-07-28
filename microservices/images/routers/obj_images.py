@@ -1,3 +1,4 @@
+from api.all_api import *
 from fastapi import Depends, HTTPException, APIRouter, UploadFile, File
 from fastapi.responses import FileResponse
 from sqlalchemy.exc import IntegrityError
@@ -50,6 +51,8 @@ async def save_image(obj_id: int, img: UploadFile = File(...), db: Session = Dep
         raise HTTPException(status_code=400, detail="Bad Request")
     image_model = ObjImages()
 
+    if not object_api.get(obj_id):
+        raise HTTPException(status_code=404, detail="404 Error Not Found Object")
     image_model.object = obj_id
     image_model.source = f"{image_model.id}.jpg"
     image_model.on_site = True
@@ -97,4 +100,4 @@ async def delete_image(image_id: int, db: Session = Depends(get_db)):
 
         return "Success"
     except IntegrityError:
-        return HTTPException(status_code=400, detail="Bad Request Remove Referencing objects first")
+        return HTTPException(status_code=400, detail="Bad Request Remove Referencing Objects First")
