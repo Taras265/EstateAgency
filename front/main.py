@@ -2,30 +2,11 @@ import datetime
 import shutil
 from datetime import date
 from flask import Flask, render_template, request, flash, redirect, session
-from api.handbooks.handbooks import *
-from api.objects.objects import *
-from api.auth.auth import *
 from front.forms import *
 from front.functions import *
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "fjkgeruhnslkfnsklklklwfoefnjkls;fkmc\kj;d3iorjO'DAWDFFGfdbHRWgjhf"
-
-district_api = Districts()
-region_api = Regions()
-city_api = Cities()
-city_region_api = CityRegions()
-street_api = Streets()
-new_building_api = NewBuildings()
-catalog_api = ObjectTypes()
-object_api = Objects()
-apartment_api = Apartments()
-object_image_api = ObjectImages()
-user_group_api = UserGroups()
-right_api = Rights()
-group_api = Groups()
-separation_api = Separations()
-client_api = Clients()
 
 
 @app.route("/")

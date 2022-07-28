@@ -1,18 +1,8 @@
-from api.auth.auth import Auth, Separations
-from api.images.images import ObjectImages
-from api.images.urls import OBJECT_IMAGES_URL
-from api.handbooks.handbooks import Locations, Handbooks, Clients, NewBuildings
-
-locations_api = Locations()
-auth_api = Auth()
-handbook_api = Handbooks()
-client_api = Clients()
-separation_api = Separations()
-new_building_api = NewBuildings()
+from api.all_api import *
 
 
 def get_object_detail(obj: dict):
-    images = ObjectImages().get_by_object(obj.get("id"))
+    images = object_image_api.get_by_object(obj.get("id"))
     if images:
         image_name = images[0].get("source")
     else:
