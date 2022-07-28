@@ -1,5 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, Date, REAL, Enum, Numeric, DateTime, SmallInteger
-from sqlalchemy.orm import relationship
+from sqlalchemy import Boolean, Column, Integer, String, Date, REAL, Enum, Numeric, DateTime, SmallInteger
 from microservices.database import Base
 
 
@@ -35,11 +34,9 @@ class UserGroup(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    group = Column(Integer, ForeignKey("groups.id"))
-    group_rel = relationship("Groups", foreign_keys=[group])
+    group = Column(Integer)
 
-    user = Column(Integer, ForeignKey("users.id"))
-    user_rel = relationship("Users", foreign_keys=[user])
+    user = Column(Integer)
 
 
 class GroupRight(Base):
@@ -47,11 +44,9 @@ class GroupRight(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
-    group = Column(Integer, ForeignKey("groups.id"))
-    group_rel = relationship("Groups", foreign_keys=[group])
+    group = Column(Integer)
 
-    right = Column(Integer, ForeignKey("rights.id"))
-    right_rel = relationship("Rights", foreign_keys=[right])
+    right = Column(Integer)
 
 
 class Districts(Base):
@@ -67,8 +62,7 @@ class Regions(Base):
     id = Column(Integer, primary_key=True, index=True)
     region = Column(String, unique=True, index=True)
 
-    district = Column(Integer, ForeignKey("districts.id"))
-    district_rel = relationship("Districts", foreign_keys=[district])
+    district = Column(Integer)
 
 
 class Cities(Base):
@@ -77,8 +71,7 @@ class Cities(Base):
     id = Column(Integer, primary_key=True, index=True)
     city = Column(String, unique=True, index=True)
 
-    region = Column(Integer, ForeignKey("regions.id"))
-    region_rel = relationship("Regions", foreign_keys=[region])
+    region = Column(Integer)
 
     city_type = Column(Enum("село", "смт", "місто", name="city_type", create_type=False))
     center_type = Column(Enum("районний", "обласний", name="center_type", create_type=False))
@@ -90,14 +83,12 @@ class CityRegions(Base):
     id = Column(Integer, primary_key=True, index=True)
     city_region = Column(String, unique=True, index=True)
 
-    city = Column(Integer, ForeignKey("cities.id"))
-    city_rel = relationship("Cities", foreign_keys=[city])
+    city = Column(Integer)
 
     description = Column(String, unique=True, index=True)
     group_on_site = Column(String, unique=True, index=True)
 
-    region = Column(Integer, ForeignKey("city_regions.id"))
-    region_rel = relationship("CityRegions", remote_side=id, backref="sub_city_regions")
+    region = Column(Integer)
 
     hot_deals_limit = Column(Numeric, unique=False, index=True)
     prefix_to_site = Column(String, unique=False, index=True)
@@ -112,11 +103,9 @@ class Streets(Base):
     id = Column(Integer, primary_key=True, index=True)
     street = Column(String, unique=True, index=True)
 
-    city_region = Column(Integer, ForeignKey("city_regions.id"))
-    city_region_rel = relationship("CityRegions", foreign_keys=[city_region])
+    city_region = Column(Integer)
 
-    city = Column(Integer, ForeignKey("cities.id"))
-    city_rel = relationship("Cities", foreign_keys=[city])
+    city = Column(Integer)
 
 
 class ObjectTypes(Base):
@@ -153,13 +142,11 @@ class NewBuildings(Base):
     new_building = Column(String, unique=True, index=True)
     building = Column(Boolean)
 
-    street = Column(Integer, ForeignKey("streets.id"))
-    street_rel = relationship("Streets", foreign_keys=[street])
+    street = Column(Integer)
 
     house = Column(String, unique=True, index=True)
 
-    region = Column(Integer, ForeignKey("city_regions.id"))
-    region_rel = relationship("CityRegions", foreign_keys=[region])
+    region = Column(Integer)
 
 
 class Clients(Base):
@@ -187,20 +174,15 @@ class Objects(Base):
     exclusive_to = Column(Date)
     exclusive_from = Column(Date)
 
-    district = Column(Integer, ForeignKey("districts.id"))
-    district_obj = relationship("Districts", foreign_keys=[district])
+    district = Column(Integer)
 
-    region = Column(Integer, ForeignKey("regions.id"))
-    region_obj = relationship("Regions", foreign_keys=[region])
+    region = Column(Integer)
 
-    city = Column(Integer, ForeignKey("cities.id"))
-    city_obj = relationship("Cities", foreign_keys=[city])
+    city = Column(Integer)
 
-    city_region = Column(Integer, ForeignKey("city_regions.id"))
-    city_region_rel = relationship("CityRegions", foreign_keys=[city_region])
+    city_region = Column(Integer)
 
-    street = Column(Integer, ForeignKey("streets.id"))
-    street_obj = relationship("Streets", foreign_keys=[street])
+    street = Column(Integer)
 
     house = Column(String)
     apartment = Column(String)
@@ -211,70 +193,56 @@ class Objects(Base):
     sea_flag = Column(Boolean)
     vip = Column(Boolean)
 
-    withdrawal_reason = Column(Integer, ForeignKey("handbooks.id"))
-    withdrawal_reason_rel = relationship("Handbooks", foreign_keys=[withdrawal_reason])
+    withdrawal_reason = Column(Integer)
 
     independent = Column(Boolean)
 
-    condition = Column(Integer, ForeignKey("handbooks.id"))
-    condition_rel = relationship("Handbooks", foreign_keys=[condition])
+    condition = Column(Integer)
 
     special = Column(Boolean)
     urgently = Column(Boolean)
     trade = Column(Boolean)
 
-    material = Column(Integer, ForeignKey("handbooks.id"))
-    material_rel = relationship("Handbooks", foreign_keys=[material])
+    material = Column(Integer)
 
     status = Column(Enum("В продаже", "Задаток", "Снята",
                          "Продана", "Снята совсем", name="status",
                          create_type=False))
 
-    object_type = Column(Integer, ForeignKey("object_types.id"))
-    type_obj = relationship("ObjectTypes", foreign_keys=[object_type])
+    object_type = Column(Integer)
 
     square = Column(Integer)
     price = Column(Integer)
     site_price = Column(Integer)
     square_meter_price = Column(Integer)
 
-    realtor = Column(Integer, ForeignKey("users.id"))
-    realtor_obj = relationship("Users", foreign_keys=[realtor])
+    realtor = Column(Integer)
 
-    site_realtor1 = Column(Integer, ForeignKey("users.id"))
-    realtor1_obj = relationship("Users", foreign_keys=[site_realtor1])
+    site_realtor1 = Column(Integer)
 
-    site_realtor2 = Column(Integer, ForeignKey("users.id"))
-    realtor2_obj = relationship("Users", foreign_keys=[site_realtor2])
+    site_realtor2 = Column(Integer)
 
-    realtor_5_5 = Column(Integer, ForeignKey("users.id"))
-    realtor_5_5_obj = relationship("Users", foreign_keys=[realtor_5_5])
+    realtor_5_5 = Column(Integer)
 
     for_trainee = Column(Boolean)
     realtor_notes = Column(String)
     reference_point = Column(String)
 
-    author = Column(Integer, ForeignKey("users.id"))
-    author_obj = relationship("Users", foreign_keys=[author])
+    author = Column(Integer)
 
-    owner = Column(Integer, ForeignKey("clients.id"))
-    owner_obj = relationship("Clients", foreign_keys=[owner])
+    owner = Column(Integer)
 
-    client = Column(Integer, ForeignKey("clients.id"))
-    client_obj = relationship("Clients", foreign_keys=[client])
+    client = Column(Integer)
 
     owners_number = Column(SmallInteger)
 
     comment = Column(String)
 
-    separation = Column(Integer, ForeignKey("separations.id"))
-    separation_obj = relationship("Separations", foreign_keys=[separation])
+    separation = Column(Integer)
 
-    agency = Column(Integer, ForeignKey("handbooks.id"))
-    agency_rel = relationship("Handbooks", foreign_keys=[agency])
+    agency = Column(Integer)
 
-    agency_sales = Column(Integer, ForeignKey("handbooks.id"))
-    agency_sales_rel = relationship("Handbooks", foreign_keys=[agency_sales])
+    agency_sales = Column(Integer)
 
     sale_terms = Column(String)
     filename_of_exclusive_agreement = Column(String)
@@ -282,8 +250,7 @@ class Objects(Base):
     document = Column(String)
     filename_forbid_sale = Column(String)
 
-    new_building_name = Column(Integer, ForeignKey("new_buildings.id"))
-    new_building_name_rel = relationship("NewBuildings", foreign_keys=[new_building_name])
+    new_building_name = Column(Integer)
 
     new_building = Column(Boolean)
     new_building_type = Column(Enum("От хозяина", "От строителя",
@@ -297,8 +264,7 @@ class ObjImages(Base):
     source = Column(String, unique=False)
     on_site = Column(Boolean, unique=False)
 
-    object = Column(Integer, ForeignKey("objects.id"))
-    obj = relationship("Objects", foreign_keys=[object])
+    object = Column(Integer)
 
 
 class Apartments(Base):
@@ -321,26 +287,22 @@ class Apartments(Base):
     commune = Column(Boolean)
     frame = Column(String)
 
-    stair = Column(Integer, ForeignKey("handbooks.id"))
-    stair_rel = relationship("Handbooks", foreign_keys=[stair])
+    stair = Column(Integer)
 
     balcony = Column(Boolean)
 
-    heating = Column(Integer, ForeignKey("handbooks.id"))
-    heating_rel = relationship("Handbooks", foreign_keys=[heating])
+    heating = Column(Integer)
 
     office = Column(Boolean)
     penthouse = Column(Boolean)
     redevelopment = Column(Enum("Нет", "Узаконенная", "Неузаконенная",
                                 name="redevelopment", create_type=False))
 
-    layout = Column(Integer, ForeignKey("handbooks.id"))
-    layout_rel = relationship("Handbooks", foreign_keys=[layout])
+    layout = Column(Integer)
 
     construction_number = Column(String)
 
-    house_type = Column(Integer, ForeignKey("handbooks.id"))
-    house_type_rel = relationship("Handbooks", foreign_keys=[house_type])
+    house_type = Column(Integer)
 
     two_level_apartment = Column(Boolean)
     loggia = Column(Integer)
@@ -349,5 +311,4 @@ class Apartments(Base):
     floor = Column(Integer)
     storeys_number = Column(Integer)
 
-    object = Column(Integer, ForeignKey("objects.id"))
-    object_rel = relationship("Objects", foreign_keys=[object])
+    object = Column(Integer)
